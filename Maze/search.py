@@ -1,5 +1,19 @@
-import pdb
-with open("bigMaze.lay", "r") as f:
+import pdb, pathlib, sys
+
+p = pathlib.Path('.')
+pathzip = zip(range(1, len(list(p.glob('*.lay')))+1), list(p.glob('*.lay')))
+pathdict = dict(pathzip)
+print("Enter a path number: (1, 2, 3 ...)")
+for i in range(0, len(list(p.glob('*.lay')))):
+    print(f"{i+1}: {list(p.glob('*.lay'))[i]}")
+
+pathnum = int(input())
+
+if pathnum not in range(1, len(list(p.glob('*.lay')))+1):
+    print("Invalid path number")
+    sys.exit(-1)
+
+with pathdict[pathnum].open() as f:
     lines = f.readlines()
 
 #find p
@@ -10,12 +24,12 @@ for y in range(len(lines)):
         if 'P' not in lines[y][x]:
             continue
         else:
-            index = (y, x)
+            startingIndex = (y, x)
             break
     break
     
-y = index[0]
-x = index[1]
+y = startingIndex[0]
+x = startingIndex[1]
 
 def checkGoal(y, x):
     if '.' in lines[y][x]:
