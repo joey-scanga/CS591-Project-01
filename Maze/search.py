@@ -166,7 +166,7 @@ def getBreadthFirstTraversalTrail(index):
         index = index[3]
     return trail
 
-def breadthFirstTest(y, x):
+def breadthFirstTraversal(y, x):
     nodesExpanded = 0
     queue = [[y, x, [], "root"]]
     while queue:
@@ -206,7 +206,7 @@ def breadthFirstTest(y, x):
     print("Goal not reachable")
     return
         
-breadthFirstTest(y, x)  
+breadthFirstTraversal(y, x)  
 
 
 
