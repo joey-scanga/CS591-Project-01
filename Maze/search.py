@@ -1,4 +1,4 @@
-import pdb, pathlib, sys
+import pdb, pathlib, sys, time
 
 p = pathlib.Path('.')
 pathzip = zip(range(1, len(list(p.glob('*.lay')))+1), list(p.glob('*.lay')))
@@ -59,31 +59,49 @@ def checkLeft(y, x):
         return 0 #Goal found
     elif checkEmpty(y, x - 1):
         return 1 #Empty space found
+    else:
+        return -1
 
 def checkUp(y, x):
     if checkGoal(y - 1, x):
         return 0 #Goal found
     elif checkEmpty(y - 1, x):
         return 1 #Empty space found
+    else:
+        return -1
 
 def checkRight(y, x):
     if checkGoal(y, x + 1):
         return 0 #Goal found
     elif checkEmpty(y, x + 1):
         return 1 #Empty space found
+    else:
+        return -1
 
 def checkDown(y, x):
     if checkGoal(y + 1, x):
         return 0 #Goal found
     elif checkEmpty(y + 1, x):
         return 1 #Empty space found
+    else:
+        return -1
 
 def leaveTrail(y, x):
     lines[y] = lines[y][:x] + '!' + lines[y][x+1:]
 
+def drawStart(y, x):
+    lines[y] = lines[y][:x] + 'P' + lines[y][x+1:]
+    
+
 def printMap():
     for line in lines:
         print(line[:-1])
+
+def clearMap(startSquare):
+    for line in lines:
+        line = line.replace('!', ' ')
+    drawStart(startSquare[0], startSquare[1])
+    
 
 def checkTreeDepth(maxtreedepth, stack):
     if len(stack) > maxtreedepth:
@@ -148,12 +166,13 @@ def getBreadthFirstTraversalTrail(index):
         index = index[3]
     return trail
 
-def breadthFirstTraversal(y, x):
+def breadthFirstTest(y, x):
     nodesExpanded = 0
     queue = [[y, x, [], "root"]]
     while queue:
         index = queue[0]
         if checkSurroundingSquaresForGoalSquare(index[0], index[1]):
+            clearMap((y, x))
             leaveTrail(index[0], index[1])
             nodesExpanded += 1
             for square in getBreadthFirstTraversalTrail(index):
@@ -164,24 +183,30 @@ def breadthFirstTraversal(y, x):
             print(f"Max depth: {len(getBreadthFirstTraversalTrail(index))}")
             printMap()
             return
-        if "left" not in index[2] and checkLeft(index[0], index[1]) == 1:
+        if checkLeft(index[0], index[1]) == 1:
             nodesExpanded += 1
             queue.append([index[0], index[1]-1, ["right"], index])
-        if "up" not in index[2] and checkUp(index[0], index[1]) == 1:
+            leaveTrail(index[0], index[1]-1)
+        if checkUp(index[0], index[1]) == 1:
             nodesExpanded += 1
             queue.append([index[0]-1, index[1], ["down"], index])
-        if "right" not in index[2] and checkRight(index[0], index[1]) == 1:
+            leaveTrail(index[0]-1, index[1])
+        if checkRight(index[0], index[1]) == 1:
             nodesExpanded += 1
             queue.append([index[0], index[1]+1, ["left"], index])
-        if "down" not in index[2] and checkDown(index[0], index[1]) == 1:
+            leaveTrail(index[0], index[1]+1)
+        if checkDown(index[0], index[1]) == 1:
             nodesExpanded += 1
             queue.append([index[0]+1, index[1], ["up"], index])
+            leaveTrail(index[0]+1, index[1])
         queue.pop(0)
+        leaveTrail(index[0], index[1])
+        printMap()
     printMap()
     print("Goal not reachable")
     return
         
-breadthFirstTraversal(y, x)  
+breadthFirstTest(y, x)  
 
 
 
