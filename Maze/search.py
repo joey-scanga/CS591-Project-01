@@ -85,17 +85,28 @@ def printMap():
     for line in lines:
         print(line[:-1])
 
+def checkTreeDepth(maxtreedepth, stack):
+    if len(stack) > maxtreedepth:
+        return len(stack)
+    return maxtreedepth
+
+
 def depthFirstTraversal(y, x):
     stack = [[y, x, []]]
     nodesExpanded = 0
+    maxTreeDepth = 0
     while stack:
         index = stack.pop()
-        if (index[0], index[1]) != (y, x):
-            leaveTrail(index[0], index[1])
         if checkSurroundingSquaresForGoalSquare(index[0], index[1]):
+            leaveTrail(index[0], index[1])
             nodesExpanded += 1
+            maxTreeDepth = checkTreeDepth(maxTreeDepth, stack)
+            for square in stack:
+                if (square[0], square[1]) != (y, x):
+                    leaveTrail(square[0], square[1])
             print(f"Goal square at {checkSurroundingSquaresForGoalSquare(index[0], index[1])}")
             print(f"Nodes expanded: {nodesExpanded}")
+            print(f"Max tree depth: {maxTreeDepth}")
             printMap()
             return
         if "left" not in index[2] and checkLeft(index[0], index[1]) == 1:
@@ -103,62 +114,74 @@ def depthFirstTraversal(y, x):
             index[2].append("left")
             stack.append(index)
             stack.append([index[0], index[1]-1, ["right"]])
+            maxTreeDepth = checkTreeDepth(maxTreeDepth, stack)
             continue
         if "up" not in index[2] and checkUp(index[0], index[1]) == 1:
             nodesExpanded += 1
             index[2].append("up")
             stack.append(index)
             stack.append([index[0]-1, index[1], ["down"]])
+            maxTreeDepth = checkTreeDepth(maxTreeDepth, stack)
             continue
         if "right" not in index[2] and checkRight(index[0], index[1]) == 1:
             nodesExpanded += 1
             index[2].append("right")
             stack.append(index)
             stack.append([index[0], index[1]+1, ["left"]])
+            maxTreeDepth = checkTreeDepth(maxTreeDepth, stack)
             continue
         if "down" not in index[2] and checkDown(index[0], index[1]) == 1:
             nodesExpanded += 1
             index[2].append("down")
             stack.append(index)
             stack.append([index[0]+1, index[1], ["up"]])
+            maxTreeDepth = checkTreeDepth(maxTreeDepth, stack)
             continue
     printMap()
     print("Goal not reachable")
     return
 
+def getBreadthFirstTraversalTrail(index):
+    trail = [index]
+    while index[3] != "root":
+        trail.append(index[3])
+        index = index[3]
+    return trail
+
 def breadthFirstTraversal(y, x):
     nodesExpanded = 0
-    queue = [[y, x, []]]
+    queue = [[y, x, [], "root"]]
     while queue:
         index = queue[0]
-        if (index[0], index[1]) != (y, x):
-            leaveTrail(index[0], index[1])
         if checkSurroundingSquaresForGoalSquare(index[0], index[1]):
+            leaveTrail(index[0], index[1])
             nodesExpanded += 1
+            for square in getBreadthFirstTraversalTrail(index):
+                if (square[0], square[1]) != (y, x):
+                    leaveTrail(square[0], square[1])
             print(f"Goal square at {checkSurroundingSquaresForGoalSquare(index[0], index[1])}")
             print(f"Nodes expanded: {nodesExpanded}")
+            print(f"Max depth: {len(getBreadthFirstTraversalTrail(index))}")
             printMap()
             return
         if "left" not in index[2] and checkLeft(index[0], index[1]) == 1:
             nodesExpanded += 1
-            queue.append([index[0], index[1]-1, ["right"]])
+            queue.append([index[0], index[1]-1, ["right"], index])
         if "up" not in index[2] and checkUp(index[0], index[1]) == 1:
             nodesExpanded += 1
-            queue.append([index[0]-1, index[1], ["down"]])
+            queue.append([index[0]-1, index[1], ["down"], index])
         if "right" not in index[2] and checkRight(index[0], index[1]) == 1:
             nodesExpanded += 1
-            queue.append([index[0], index[1]+1, ["left"]])
+            queue.append([index[0], index[1]+1, ["left"], index])
         if "down" not in index[2] and checkDown(index[0], index[1]) == 1:
             nodesExpanded += 1
-            queue.append([index[0]+1, index[1], ["up"]])
+            queue.append([index[0]+1, index[1], ["up"], index])
         queue.pop(0)
     printMap()
     print("Goal not reachable")
     return
         
-        
-
-depthFirstTraversal(y, x)
+breadthFirstTraversal(y, x)  
 
 
 
