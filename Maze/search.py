@@ -87,30 +87,37 @@ def printMap():
 
 def depthFirstTraversal(y, x):
     stack = [[y, x, []]]
+    nodesExpanded = 0
     while stack:
         index = stack.pop()
         if (index[0], index[1]) != (y, x):
             leaveTrail(index[0], index[1])
         if checkSurroundingSquaresForGoalSquare(index[0], index[1]):
+            nodesExpanded += 1
             print(f"Goal square at {checkSurroundingSquaresForGoalSquare(index[0], index[1])}")
+            print(f"Nodes expanded: {nodesExpanded}")
             printMap()
             return
         if "left" not in index[2] and checkLeft(index[0], index[1]) == 1:
+            nodesExpanded += 1
             index[2].append("left")
             stack.append(index)
             stack.append([index[0], index[1]-1, ["right"]])
             continue
         if "up" not in index[2] and checkUp(index[0], index[1]) == 1:
+            nodesExpanded += 1
             index[2].append("up")
             stack.append(index)
             stack.append([index[0]-1, index[1], ["down"]])
             continue
         if "right" not in index[2] and checkRight(index[0], index[1]) == 1:
+            nodesExpanded += 1
             index[2].append("right")
             stack.append(index)
             stack.append([index[0], index[1]+1, ["left"]])
             continue
         if "down" not in index[2] and checkDown(index[0], index[1]) == 1:
+            nodesExpanded += 1
             index[2].append("down")
             stack.append(index)
             stack.append([index[0]+1, index[1], ["up"]])
@@ -120,22 +127,29 @@ def depthFirstTraversal(y, x):
     return
 
 def breadthFirstTraversal(y, x):
+    nodesExpanded = 0
     queue = [[y, x, []]]
     while queue:
         index = queue[0]
         if (index[0], index[1]) != (y, x):
             leaveTrail(index[0], index[1])
         if checkSurroundingSquaresForGoalSquare(index[0], index[1]):
+            nodesExpanded += 1
             print(f"Goal square at {checkSurroundingSquaresForGoalSquare(index[0], index[1])}")
+            print(f"Nodes expanded: {nodesExpanded}")
             printMap()
             return
         if "left" not in index[2] and checkLeft(index[0], index[1]) == 1:
+            nodesExpanded += 1
             queue.append([index[0], index[1]-1, ["right"]])
         if "up" not in index[2] and checkUp(index[0], index[1]) == 1:
+            nodesExpanded += 1
             queue.append([index[0]-1, index[1], ["down"]])
         if "right" not in index[2] and checkRight(index[0], index[1]) == 1:
+            nodesExpanded += 1
             queue.append([index[0], index[1]+1, ["left"]])
         if "down" not in index[2] and checkDown(index[0], index[1]) == 1:
+            nodesExpanded += 1
             queue.append([index[0]+1, index[1], ["up"]])
         queue.pop(0)
     printMap()
@@ -144,7 +158,7 @@ def breadthFirstTraversal(y, x):
         
         
 
-breadthFirstTraversal(y, x)
+depthFirstTraversal(y, x)
 
 
 
