@@ -132,36 +132,41 @@ def depthFirstTraversal(y, x):
             print(f"Max size of fringe: {maxFringeSize}")
             printMap()
             return
-        if "left" not in index[2] and checkLeft(index[0], index[1]) == 1:
+        if checkLeft(index[0], index[1]) == 1:
             nodesExpanded += 1
             index[2].append("left")
             stack.append(index)
             stack.append([index[0], index[1]-1, ["right"]])
             maxTreeDepth = checkTreeDepth(maxTreeDepth, stack)
+            leaveTrail(index[0], index[1]-1)
             continue
-        if "up" not in index[2] and checkUp(index[0], index[1]) == 1:
+        if checkUp(index[0], index[1]) == 1:
             nodesExpanded += 1
             index[2].append("up")
             stack.append(index)
             stack.append([index[0]-1, index[1], ["down"]])
             maxTreeDepth = checkTreeDepth(maxTreeDepth, stack)
+            leaveTrail(index[0]-1, index[1])
             continue
-        if "right" not in index[2] and checkRight(index[0], index[1]) == 1:
+        if checkRight(index[0], index[1]) == 1:
             nodesExpanded += 1
             index[2].append("right")
             stack.append(index)
             stack.append([index[0], index[1]+1, ["left"]])
             maxTreeDepth = checkTreeDepth(maxTreeDepth, stack)
+            leaveTrail(index[0], index[1]+1)
             continue
-        if "down" not in index[2] and checkDown(index[0], index[1]) == 1:
+        if checkDown(index[0], index[1]) == 1:
             nodesExpanded += 1
             index[2].append("down")
             stack.append(index)
             stack.append([index[0]+1, index[1], ["up"]])
             maxTreeDepth = checkTreeDepth(maxTreeDepth, stack)
+            leaveTrail(index[0]+1, index[1])
             continue
         if maxFringeSize < len(stack):
             maxFringeSize = len(stack)
+        printMap()
     printMap()
     print("Goal not reachable")
     return
@@ -218,8 +223,15 @@ def breadthFirstTraversal(y, x):
     printMap()
     print("Goal not reachable")
     return
-        
-breadthFirstTraversal(y, x)  
+
+print("1: Depth First")
+print("2: Breadth First")
+choice = int(input())
+
+if choice == 1:
+    depthFirstTraversal(y, x)
+elif choice == 2:
+    breadthFirstTraversal(y, x)
 
 
 
