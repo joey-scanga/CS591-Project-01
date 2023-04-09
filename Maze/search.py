@@ -113,6 +113,8 @@ def depthFirstTraversal(y, x):
     stack = [[y, x, []]]
     nodesExpanded = 0
     maxTreeDepth = 0
+    pathSolutionCost = 0
+    maxFringeSize = 0
     while stack:
         index = stack.pop()
         if checkSurroundingSquaresForGoalSquare(index[0], index[1]):
@@ -121,10 +123,13 @@ def depthFirstTraversal(y, x):
             maxTreeDepth = checkTreeDepth(maxTreeDepth, stack)
             for square in stack:
                 if (square[0], square[1]) != (y, x):
+                    pathSolutionCost += 1
                     leaveTrail(square[0], square[1])
             print(f"Goal square at {checkSurroundingSquaresForGoalSquare(index[0], index[1])}")
+            print(f"Path solution cost: {pathSolutionCost}")
             print(f"Nodes expanded: {nodesExpanded}")
             print(f"Max tree depth: {maxTreeDepth}")
+            print(f"Max size of fringe: {maxFringeSize}")
             printMap()
             return
         if "left" not in index[2] and checkLeft(index[0], index[1]) == 1:
@@ -155,6 +160,8 @@ def depthFirstTraversal(y, x):
             stack.append([index[0]+1, index[1], ["up"]])
             maxTreeDepth = checkTreeDepth(maxTreeDepth, stack)
             continue
+        if maxFringeSize < len(stack):
+            maxFringeSize = len(stack)
     printMap()
     print("Goal not reachable")
     return
@@ -168,6 +175,8 @@ def getBreadthFirstTraversalTrail(index):
 
 def breadthFirstTraversal(y, x):
     nodesExpanded = 0
+    maxFringeSize = 0
+    pathSolutionCost = 0
     queue = [[y, x, [], "root"]]
     while queue:
         index = queue[0]
@@ -178,9 +187,12 @@ def breadthFirstTraversal(y, x):
             for square in getBreadthFirstTraversalTrail(index):
                 if (square[0], square[1]) != (y, x):
                     leaveTrail(square[0], square[1])
+                    pathSolutionCost += 1
             print(f"Goal square at {checkSurroundingSquaresForGoalSquare(index[0], index[1])}")
+            print(f"Path solution cost: {pathSolutionCost}")
             print(f"Nodes expanded: {nodesExpanded}")
             print(f"Max depth: {len(getBreadthFirstTraversalTrail(index))}")
+            print(f"Max size of fringe: {maxFringeSize}")
             printMap()
             return
         if checkLeft(index[0], index[1]) == 1:
@@ -199,9 +211,10 @@ def breadthFirstTraversal(y, x):
             nodesExpanded += 1
             queue.append([index[0]+1, index[1], ["up"], index])
             leaveTrail(index[0]+1, index[1])
+        if len(queue) > maxFringeSize: 
+            maxFringeSize = len(queue)
         queue.pop(0)
         leaveTrail(index[0], index[1])
-        printMap()
     printMap()
     print("Goal not reachable")
     return
