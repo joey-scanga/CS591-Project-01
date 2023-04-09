@@ -4,7 +4,7 @@ p = pathlib.Path('.')
 pathzip = zip(range(1, len(list(p.glob('*.lay')))+1), list(p.glob('*.lay')))
 pathdict = dict(pathzip)
 print("Enter a path number: (1, 2, 3 ...)")
-for i in range(0, len(list(p.glob('*.lay')))):
+for i in range(len(list(p.glob('*.lay')))):
     print(f"{i+1}: {list(p.glob('*.lay'))[i]}")
 
 pathnum = int(input())
@@ -98,8 +98,8 @@ def printMap():
         print(line[:-1])
 
 def clearMap(startSquare):
-    for line in lines:
-        line = line.replace('!', ' ')
+    for i in range(len(lines)):
+        lines[i] = lines[i].replace("!", " ")
     drawStart(startSquare[0], startSquare[1])
     
 
